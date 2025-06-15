@@ -5,9 +5,9 @@ print_help() {
     echo "🧭 Usage: ./tuxtorial.sh [part]"
     echo ""
     echo "Available options:"
-    echo "  part1         📍 Check current directory with 'pwd'"
-    echo "  part2         📂 Explore a folder with 'ls <folder>'"
-    echo "  part3         📄 (Coming soon!) Read files with 'cat' and 'less'"
+    echo "  part1         Navigating the file system"
+    echo "  part2         Modifying the file system"
+    echo "  part3         Text data and scripts"
 	echo "  --commands    📖 Show the Command Reference (learned commands)"
     echo "  --help        🆘 Show this help message"
     echo ""
@@ -22,13 +22,29 @@ print_commands(){
     echo ""
     echo "Here are the commands you are learning:"
     echo ""
-    echo "  pwd           - Print the current working directory (absolute path)"
-    echo "  ls            - List files and directories in the current folder"
-	echo "  ls <folder>   - List files and directories in the given folder"
-    echo "  cd            - Go to your home directory (shortcut to ~)"
-    echo "  cd <folder>   - Move into a subdirectory (e.g., cd Documents)"
-    echo "  cd ..         - Move up one directory (to the parent folder)"
-    echo "  less          - View the contents of a file page by page"
+    echo "Navigating the file system"
+	echo "  pwd                          - Print the current working directory (absolute path)"
+    echo "  ls                           - List files and directories in the current folder"
+	echo "  ls <folder>                  - List files and directories in the given folder"
+    echo "  cd                           - Go to your home directory (shortcut to ~)"
+    echo "  cd <folder>                  - Move into a subdirectory (e.g., cd Documents)"
+    echo "  cd ..                        - Move up one directory (to the parent folder)"
+    echo ""
+	echo "Modifying the file system"
+	echo "  cp <source> <destination>     - Copy files or directories"
+	echo "                                 Example: cp notes.txt backup.txt"
+	echo "  mv <source> <destination>     - Move or rename files and directories"
+	echo "                                 Example: mv old.txt new.txt"
+	echo "  rm <file>                     - Remove (delete) a file"
+	echo "                                 Example: rm unwanted.txt"
+	echo "  mkdir <folder>                - Create a new directory"
+	echo "                                 Example: mkdir new_folder"
+	echo "  rm -r <folder>                - Remove a folder and all its contents (recursive)"
+	echo "                                 Example: rm -r old_folder"
+
+	
+	echo "Modifying the file system"
+	echo "  less          - View the contents of a file page by page"
     echo "  cat           - Print the contents of a file to the terminal"
     echo "  zcat          - Print the contents of a compressed (.gz) file"
     echo "  wc -l         - Count the number of lines in a file"
@@ -37,47 +53,136 @@ print_commands(){
     exit 0
 }
 
+
+run_cd_exercise() {
+  local start_dir="$1"
+  local target_dir="$2"
+  shift 2  # shift the first two arguments so "$@" now contains all correct answers
+
+  echo ""
+  echo "💡 Exercise:"
+  echo ""
+  echo "1. Get to: $start_dir"
+  echo "   (Use 'cd' to change and 'pwd' to check your current directory)"
+  echo ""
+  echo "2. Use 'cd' and the shortest RELATIVE path to get to: $target_dir"
+  echo "   (Expected result of 'pwd': $target_dir)"
+  echo ""
+
+  while true; do
+	echo "🧠 Enter the cd command you used to get"
+	echo "     from $start_dir"
+    read -p "     to $target_dir: " user_cmd
+
+    for correct_cmd in "$@"; do
+      if [[ "$user_cmd" == "$correct_cmd" ]]; then
+        echo "✅ Correct! You're in the right folder using the right command. Great job!"
+        echo ""
+        return
+      fi
+    done
+	
+	echo "❌ That's not quite right. Try again. Remember: use a relative path from your current location."
+    echo ""
+  
+  done
+}
+
 # ToDo:
-# introduce ~
 # cp
 # mv
 # rm
 # rm -r
 # mkdir
 # man command, command --help
-# Probably get sections that you can choose: navigating file system (pwd, ls, ls <>, cd, cd .., cd <>),changing the file system (cp,mv, rm, mkdir, rm -r), process text data (read, wc -l)  
+# Probably get sections that you can choose: navigating file system (pwd, ls, ls <>, cd, cd .., cd <>),changing the file system (cp,mv, rm, mkdir, rm -r), process text data (read, wc -l) and start programs  
 # 
 
-# tasks I came up with so far:
-# 
-
-#clear
+clear
 echo "Hi! My name is Tux! 🐧"
 sleep 1
 
 echo ""
-echo "To go through this tutorial with me, you need to open a second shell parallel to this shell"
-echo "There you will learn and practice shell commands!"
+echo "🖥 ️To go through this tutorial with me, please open a second terminal window"
+echo "You'll run commands in that second terminal while keeping this one open for guidance."
+
+# Getting script dir
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 sleep 1
 
 part1() {
 echo ""
-echo "🧩 Part 1: navigating the filesystem"
+echo "========================================="
+echo "🧩 Part 1: Navigating the file system"
+echo "========================================="
+echo ""
+echo "What you see on your second terminal? It is a prompt"
+echo ""
+echo "In your terminal, the prompt is the line that appears before every command you type."
+echo ""
+echo "It usually looks something like this:"
+echo "  alex@minty:~$"
+echo ""
+echo "Let's break that down:"
+echo "  alex      - your username"
+echo "  minty     - the name of your computer (hostname)"
+echo "  ~         - your current directory (tilde means your home folder)"
+echo "  $         - this symbol means you're a normal user (if you're root, it shows #)"
+echo ""
+echo "💬 The prompt is the terminal's way of saying: 'I'm ready — type your next command!'"
+echo ""
+echo "You don't need to type the prompt itself. You just type your command after it."
+echo "For example, if you see:"
+echo "  alex@minty:~$ pwd"
+echo "You just type: pwd"
+echo ""
+read -p "👉 Press Enter to continue..." _
+
+# Absolute path intro
+echo ""
+echo "📚 Understanding File Path Structure in Linux:"
+echo ""
+echo "🔹 Linux organizes files in a hierarchical structure, like a big tree."
+echo "🔹 Everything starts from the root directory, written as just a single slash: /"
+echo ""
+echo "Examples of paths in Linux:"
+echo "  /           → The root directory"
+echo "  /home       → Where all users' home directories are stored"
+echo "  /home/alex  → A specific user's personal directory"
+echo "  /etc        → System configuration files"
+echo ""
+echo "Compared to Windows:"
+echo "  - Windows uses drive letters, like C:\\ or D:\\"
+echo "  - A path in Windows might look like: C:\\Users\\Alex\\Documents"
+echo ""
+echo "Key differences:"
+echo "  - Linux uses slashes (/) — not backslashes (\\)"
+echo "  - Linux has one filesystem starting from / — no drive letters"
+echo "  - All folders are part of this single tree"
+echo ""
+read -p "👉 Press Enter to continue..." _
+
+echo ""
+echo "An absolute path tells you exactly where something is on the system, starting from the root directory (/)."
+echo "It always starts with a slash (/), no matter where you are."
+echo ""
+echo "Examples:"
+echo "  /home/alex/Documents"
+echo "  /usr/bin/python"
+echo ""
+read -p "👉 Press Enter to continue..." _
+
+# Absolute path with pwd
 echo ""
 echo "🧭 Let's learn how to find where you are in the filesystem!"
 
-# Getting script dir
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-
-# Step 1: Absolute path with pwd
 echo ""
-echo "📘 First, let's try our first command: pwd"
-echo "Tris command will output an absolute path to your current position in a file system (we will call it a current working directory)"
+echo "📘 Our first command: pwd"
+echo "This command will output an absolute path to your current position in a file system (we will call this position a current working directory)"
 echo ""
-echo "Open a second shell and type there a command:"
-echo "pwd"
+echo "In your second terminal enter a command:"
+echo "🐧@🎓~$ pwd"
 echo ""
 echo "What is your current working directory?"
 
@@ -89,36 +194,85 @@ while true; do
         echo "✅ Well done!"
         break
     else
-        echo "❌ The path you gave me does not exist on your system. Try again!"
+        echo "❌ The path you entered does not exist on your system. Try again!"
 		echo "Hint: a path could look like /home/elephant"
     fi
 done
+read -p "👉 Press Enter to continue..." _
 
+# chaning directories with cd
 echo ""
-echo "You can 'jump' through the file system with tha command cd (=change directory)"
-echo "Typing 'cd' without any argument and hitting Enter will bring you to your user home directory"
-echo "This is very useful if you are lost in the file system, and just want to 'get back home' :)"
+echo "📘 Our next command: cd"
+echo "You can 'jump' through the file system with the command cd (=change directory)."
+echo "cd takes one optional argument: the path to the destination directory."
+echo "Our destination is: ${SCRIPT_DIR}:"
 echo ""
-echo "🔍 Lets try just that, run this code in your second shell:"
-echo "    cd"
+echo "Execute the following command in your second terminal:"
+echo "🐧@🎓~$ cd ${SCRIPT_DIR}"
 echo ""
-echo "'cd' normally does not give any output, it just does its work. So lets move on and check your position now."
+read -p "👉 Press Enter to continue..." _
 
-command=""
-while [[ "$command" != "pwd" ]]; do
-    read -p "🧠 What is the command to check your current working directory? Test it in your second shell, and type it for me here:" command
+echo "cd normally does not give any output, it just does it´s work."
+echo ""
+echo "If you are getting errors executing this command, check the exact spelling! There are no spaces between the slashes (/) in Linux paths! No typos are allowed!"
+echo ""
+echo "Did you manage to execute the command without errors? Lets move on and check your position now! Lets get your current working directory. "
 
-    if [[ "$command" != "pwd" ]]; then
+echo "Do you remember 'pwd' command? Run it again in your second terminal:"
+echo "🐧@🎓~$ pwd"
+echo ""
+
+#Check if the user is in the same directory
+user_in1=""
+while [[ "$user_in1" != "$SCRIPT_DIR" ]]; do
+    read -p "🧠 Enter the output of your pwd command: " user_in1
+
+    if [[ "$user_in1" != "$SCRIPT_DIR" ]]; then
         echo ""
-        echo "❌ '$command' is not one of the commands we learned. Please try again!"
-		echo "(Or press Ctrl+C to quit this tutorial)"
+        echo "Please change your current working directory."
+		echo "To do so use command cd (=change directory)"
+		echo ""
+		echo "Type in your second terminal:"
+        echo "🐧@🎓~$ cd $SCRIPT_DIR"
+        echo ""
+		echo "Then run 'pwd' again."
         echo ""
     fi
 done
 
+echo "✅ Well done!"
+read -p "👉 Press Enter to continue..." _
+
+# cd without arguments
+echo ""
+echo "Running cd without any arguments will bring you to your user home directory"
+echo "This is very useful if you are lost in the file system, and just want to 'get back home' :)"
+echo ""
+echo "🔍 Lets try just that, run this code in your second terminal:"
+echo "🐧@🎓~$ cd"
+echo ""
+
+read -p "👉 Press Enter to continue..." _
+
+command=""
+while true; do
+	echo "What is the command to check your current working directory? Run this command in your second terminal"
+    read -p "🧠 Enter this command for me here (not the command output):" command
+
+    if [[ "$command" == "pwd" ]]; then
+		echo "✅ Correct! 'pwd' is the command that outputs your current working directory!"
+		break
+	else
+        echo "❌ '$command' is not one of the commands we learned. Please try again!"
+    fi
+done
+
+echo ""
+echo "'cd' should have brought you to your home path"
+
 user_input=""
 while true; do
-    read -p "🧠 Enter your home path: " user_input
+    read -p "🧠 Enter your home path (output of 'pwd' command): " user_input
 
     if [[ "$user_input" == "$HOME" ]]; then
         echo "✅ Correct! That is your home directory."
@@ -128,33 +282,42 @@ while true; do
     fi
 done
 
-echo "Now, wherever you are lets get back to the directory this script is in and start working with supplied data!"
-echo "Get you current working directory. To do so, run 'pwd' in your second shell"
+read -p "👉 Press Enter to continue..." _
+echo ""
+echo "Now, wherever you are lets get back to the directory we will work from!"
+echo "Get your current working directory. To do so, run 'pwd' in your second terminal"
+
 #Check if the user is in the same directory
 user_in1=""
 while [[ "$user_in1" != "$SCRIPT_DIR" ]]; do
-    read -p "🧠 Copy here the output of your command and hit Enter: " user_in1
+    read -p "🧠 Copy here the output of your command and press Enter: " user_in1
 
     if [[ "$user_in1" != "$SCRIPT_DIR" ]]; then
         echo ""
-        echo "🔁 Please change your current working directory."
+        echo "Please change your current working directory."
 		echo "To do so use command cd (=change directory)"
-		echo "Type in your second shell:"
-        echo "    cd \"$SCRIPT_DIR\""
-        echo "Then run 'pwd' again and paste the result here."
-        echo "(Press Ctrl+C to quit)"
+		echo ""
+		echo "Type in your second terminal:"
+        echo "🐧@🎓~$ cd $SCRIPT_DIR"
+        echo ""
+		echo "Then run 'pwd' again and paste the result here."
         echo ""
     fi
 done
 
 echo ""
 echo "✅ Great! You’re in the correct directory."
+read -p "👉 Press Enter to continue..." _
 
-# Ask for a folder name that exists inside SCRIPT_DIR
-echo "📂 Now, can you name one folder that exists in this directory?"
-echo "Use the 'ls' command in your second shell if you need to look."
+# ls command
 echo ""
-echo "Typing 'ls' in your shell will show the contents of your current working directory."
+echo "📘 Our next command: ls"
+
+echo "Lets look around. What files and folders are there in our current working directory?"
+echo "To do so, we will learn a new command: ls (= list directory)"
+echo "Now, can you name one folder that exists in your current directory?"
+echo ""
+echo "Typing 'ls' in your terminal will show the contents of your current working directory."
 echo ""
 
 foldername=""
@@ -162,65 +325,383 @@ while true; do
     read -p "🧠 Enter the name of one folder here: " foldername
 
     if [[ -d "$SCRIPT_DIR/$foldername" ]]; then
-        echo "🎉 Correct! '$foldername' is a folder in this directory."
+        echo "✅ Correct! '$foldername' is a folder in this directory."
         break
     else
         echo ""
         echo "❌ '$foldername' is not a folder in this directory."
-        echo "🔁 Use 'ls \"$SCRIPT_DIR\"' in your other shell to see what’s there."
-        echo "(Press Ctrl+C to quit)"
+        echo "Use 'ls $SCRIPT_DIR' in your second terminal to see what’s there."
         echo ""
     fi
 done
 
-foldername="some_data"
+read -p "👉 Press Enter to continue..." _
+
 # Ask the user to list contents of a folder
-echo "📘 Now let’s explore a folder using: ls <folder>"
 echo ""
-echo "🔍 To do this, run this code in your second shell:"
-echo "    ls $foldername"
+echo "Now let’s explore this folder using: ls <folder>"
+echo "To do this, just exchange the placeholder <folder> with a folder name you want to examine."
+echo "Execute this code in your second terminal:"
+echo "🐧@🎓~$ ls $foldername"
 echo ""
 echo "This will show the contents of the '$foldername' folder."
+echo "You can easily check the content of any folder on your system from your current position!"
 echo ""
 
 itemname=""
 while true; do
-    read -p "🧠 Enter the name of one item inside '$foldername': " itemname
+    read -p "🧠 Enter the name of one item (folder or file) inside '$foldername': " itemname
 
     if [[ -e "$SCRIPT_DIR/$foldername/$itemname" ]]; then
-        echo "🎉 Yes! '$itemname' exists inside '$foldername'. Well done!"
+        echo "✅ Yes! '$itemname' exists inside '$foldername'. Well done!"
         break
     else
         echo "❌ Hmm... '$itemname' doesn't seem to be in '$foldername'."
-        echo "🔁 Try running: ls \"$foldername\" and check again."
+        echo "Try running: ls $foldername and check again."
+		echo "(Or press Ctrl+C to quit tuxtorial)"
     fi
 done
 
+read -p "👉 Press Enter to continue..." _
 
+# Absolute and relative paths
+echo ""
+echo "📘 Absolute and relative paths"
+echo ""
+echo "As we have learned earlier, the absolute path always starts with a slash (/), no matter where you are."
+echo ""
+echo "Relative paths let you move from your current directory to another, without typing the full path."
+echo ""
+echo " Let's learn 3 important shortcuts:"
+echo ""
+echo "  .     means 'the current directory'"
+echo "         → You usually won’t use it alone with cd, but it's useful in scripts or with './program.sh'"
+echo ""
+echo "  ..    means 'the parent directory'"
+echo "         → It takes you one level up."
+echo "         → You can chain it, like '../../..' to go up multiple levels."
+echo ""
+echo "  ~     means 'your home directory'"
+echo "         → It's a shortcut to /home/your_username"
+echo "         → 'cd ~' has the same effect as 'cd'"
+echo ""
+echo "Tip: Use 'pwd' at any time to check your current location (absolute path) or currect working directory."
+read -p "👉 Press Enter to continue..." _
+
+# autocompletion
+echo ""
+echo "📘 Autocompletion"
+echo ""
+echo "When you're typing a command in the terminal, you can press the TAB key to auto-complete filenames, folders, or commands!"
+echo ""
+echo "For example:"
+echo ""
+echo "In your second terminal get to $SCRIPT_DIR:"
+echo "🐧@🎓~$ cd $SCRIPT_DIR"
+echo ""
+echo "Then type:"
+echo "🐧@🎓~$ cd somb"
+echo ""
+echo "Then press the TAB key → it might complete to:"
+echo "🐧@🎓~$ cd sombrero"
+echo ""
+echo "If multiple options are possible (like 'sombrero', 'some_data'), pressing TAB twice will show them."
+echo ""
+echo "Try it out in your second terminal now:"
+echo "🐧@🎓~$ cd $SCRIPT_DIR"
+echo "🐧@🎓~$ cd som"
+echo ""
+echo "Then press TAB twice (TAB TAB)"
+
+read -p "👉 Press Enter to continue..." _
+echo ""
+
+while true; do
+	echo "🧠 Name me one folder you autocomplete into from 'cd som'"
+	read -p " Folder name: " foldername
+
+	if [[ -d "$SCRIPT_DIR/$foldername" ]]; then
+		echo "✅ Great! '$foldername' exists!"
+		break
+	else
+		echo "❌ Hmm... '$foldername' doesn't seem to exist. Try again."	
+	fi
+done
+
+echo ""
+echo "Now use autocompletion to get to the end of a long folder structure starting from $SCRIPT_DIR/sombrero"
+echo "In your second terminal type (DO NOT PRESS ENTER):"
+echo "🐧@🎓~$ cd $SCRIPT_DIR/sombrero"
+echo ""
+echo "Press TAB as long as your path gets longer"
+
+while true; do
+	read -p "🧠 Copy and paste here the longest absolute path you could autocomplete from $SCRIPT_DIR/sombrero:" folderpath
+
+	if [[ -d "$folderpath" && "$folderpath" == "$SCRIPT_DIR/sombrero/just/a/very/long/path/of/subfolders" ]]; then
+		echo "✅ Great! You dig atocompletion!"
+		break
+	else
+		echo "❌ Hmm... '$folderpath' doesn't seem to exist. Try again."	
+	fi
+done
+read -p "👉 Press Enter to continue..." _
+
+# Exercises on cd relative path 
+run_cd_exercise "$SCRIPT_DIR/some_data/more_data/raw_data" \
+ "$SCRIPT_DIR/sombrero" \
+  "cd ../../../sombrero" "cd ../../../sombrero/"
+
+read -p "👉 Press Enter to go to the next exercise..." _
+
+run_cd_exercise "$SCRIPT_DIR/sombrero" \
+ "$SCRIPT_DIR/some_data/more_data/data_analysis" \
+  "cd ../sombrero/some_data/more_data/data_analysis" \
+  "cd ../sombrero/some_data/more_data/data_analysis/"
+
+echo "🎉🎉🎉 Congratulations! You finished the tuxtorial part 'Navigating the file system'!"
 }
 
 # --- Part 2: Placeholder ---
 part2() {
-    echo ""
-    echo "🧩 Part 2: Coming soon!"
-    echo "huhu"
+echo ""
+echo "========================================="
+echo "🧩 Part 2: Modifying the file system"
+echo "========================================="
+echo ""
+
+# 1. mkdir with rules what not to do and how not to name
+echo ""
+echo "📘 Our next command: mkdir — Make a New Directory"
+echo ""
+echo "The command 'mkdir' stands for 'make directory'."
+echo "It's used to create new folders in your file system."
+echo ""
+
+echo "Basic usage:"
+echo "    mkdir <my_folder>"
+echo "This creates a folder called 'my_folder' in your current directory."
+echo ""
+
+echo "Example:"
+echo ""
+echo "In your second shell run the following:"
+echo "🐧@🎓~$ mkdir projects"
+echo "🐧@🎓~$ cd projects"
+echo "🐧@🎓~$ mkdir demo"
+echo "Now you've created a folder 'projects', entered it, and created another folder inside called 'demo'."
+read -p "👉 Try it now in another shell, then press Enter to continue..." _
+
+echo ""
+echo "Naming Rules for Directories:"
+echo "✅ You *can* use:"
+echo "   - Letters (A–Z, a–z)"
+echo "   - Numbers (0–9)"
+echo "   - Underscores (_) and hyphens (-)"
+echo "   - Dots (.) (but be careful — folders starting with a dot are hidden!)"
+echo ""
+
+echo "🚫 Avoid using:"
+echo "   - Spaces (use underscores or quotes if you must)"
+echo "     e.g., mkdir 'my folder with spaces'"
+echo "   - Special characters like: / \\ * ? < > | \" ' ; : ! &"
+echo "   - Characters that may be reserved by the shell or your operating system"
+echo ""
+
+echo "Tip: Use 'ls' to check if your new folder was created!"
+echo ""
+
+read -p "👉 Press Enter to continue..." _
+
+echo ""
+echo "The Power of the Command Line is creating folders quicker than in graphical user interfaces!"
+echo ""
+echo "With one command, you can create multiple folders or even whole folder trees!"
+echo ""
+
+echo "Create multiple folders side by side:"
+echo "🐧@🎓~$ cd $SCRIPT_DIR/some_data"
+echo "🐧@🎓~$ mkdir apples bananas oranges"
+echo ""
+echo "This will create three folders in your current directory:"
+echo "    ./apples  ./bananas  ./oranges"
+echo ""
+echo "Then run: ls"
+echo "You'll see your new folders listed."
+echo ""
+read -p "👉 Try it now in the second shell, then press Enter to continue..." _
+
+echo ""
+echo "Create nested folders in one command using -p:"
+echo "🐧@🎓~$ cd $SCRIPT_DIR/some_data"
+echo "🐧@🎓~$ mkdir -p projects/2025/June/code"
+echo ""
+echo "This will create the full folder tree at once:"
+echo "    ./projects"
+echo "        └── 2025"
+echo "            └── June"
+echo "                └── code"
+echo ""
+echo "No need to create one folder at a time!"
+echo ""
+
+echo "💡 Why use -p?"
+echo "    - It creates parent folders as needed."
+echo "    - It won’t complain if parts of the path already exist."
+echo ""
+
+read -p "👉 Try it in a second shell, then press Enter to continue..." _
+
+# mkdir exercise
+echo ""
+echo "💡 Exercise:"
+echo ""
+echo "1. Get to: $SCRIPT_DIR/sombrero/just/a/very/long"
+echo "   (Use 'cd' to change and 'pwd' to check your current directory)"
+echo ""
+echo "2. Use 'mkdir' and the shortest RELATIVE path to create a folder: $SCRIPT_DIR/sombrero/small"
+echo "   (Expected result of 'pwd': $SCRIPT_DIR/sombrero/small)"
+echo ""
+
+correct_cmd="mkdir ../../../../small"
+while true; do
+	echo "🧠 Enter the command you used to create"
+	echo "     a folder $SCRIPT_DIR/sombrero/small"
+	read -p "     from a folder $SCRIPT_DIR/sombrero/just/a/very/long: " user_cmd
+
+    if [[ "$user_cmd" == "$correct_cmd" ]]; then
+      echo "✅ Correct! You're created a right folder using the right command. Great job!"
+      echo ""
+	  break
+    fi
+	
+	echo "❌ That's not quite right. Try again. Remember: use a relative path from your current location."
+	echo ""
+done
+
+read -p "👉 Press Enter to continue..." _
+
+# rm and rm -r
+echo ""
+echo "📘 Removing Files and Folders: rm and rm -r"
+echo ""
+echo "The command 'rm' stands for 'remove'. It's used to delete files."
+echo "Be careful: files deleted with 'rm' are NOT moved to Trash — they are permanently deleted!"
+echo ""
+
+echo "Removing a single file:"
+echo "    rm old_notes.txt"
+echo "This will delete the file 'old_notes.txt' from the current directory."
+echo ""
+
+echo "Remove a folder and everything inside it:"
+echo "    rm -r my_folder"
+echo "The '-r' flag means 'recursive' — it deletes the folder AND all its contents."
+echo ""
+
+echo "Tips:"
+echo "✅ Always double-check the folder or file name before running rm!"
+echo "✅ If you're unsure, use 'ls' first to see what's inside."
+echo ""
+echo "🚫 Avoid running dangerous patterns like: rm -r *"
+echo "   (This can delete EVERYTHING in your current folder!)"
+echo ""
+
+echo "Example:"
+echo ""
+echo "🐧@🎓~$ mkdir temp_folder"
+echo "🐧@🎓~$ ls temp_folder"
+echo "🐧@🎓~$ mkdir temp_folder/bla temp_folder/blu"
+echo "🐧@🎓~$ ls temp_folder"
+echo "🐧@🎓~$ rm -r temp_folder"
+echo ""
+echo "This will first create and then delete the entire 'temp_folder' and both subfolders inside it."
+echo ""
+read -p "👉 Try creating a folder in a second shell, then press Enter to continue..." _
+
+echo ""
+echo "💡 Exercise:"
+echo ""
+echo "Now clean up your mess. So far you created folders:"
+echo "   apples bananas oranges"
+echo "   projects/2025/June/code"
+echo "   $SCRIPT_DIR/sombrero/small"
+echo ""
+echo "Find the folders and delete them!"
+echo ""
+read -p "👉 Press Enter to continue..." _
+
+# cp and mv (also rename)
+echo ""
+echo "📘 Copying and Moving Files: cp and mv"
+echo ""
+
+echo "cp — Copy Files or Folders"
+echo "The 'cp' command is used to copy files or folders from one place to another."
+echo ""
+
+echo "✅ Example:"
+echo "    cp report.txt backup_report.txt"
+echo "This creates a new file 'backup_report.txt' that is a copy of 'report.txt'."
+echo ""
+
+echo "📁 Copying into a folder:"
+echo "    cp photo.jpg pictures/"
+echo "This copies 'photo.jpg' into the 'pictures' directory."
+echo ""
+
+echo "🔸 2. mv — Move or Rename Files"
+echo "The 'mv' command is used to *move* or *rename* files and folders."
+echo ""
+
+echo "✅ Example (renaming):"
+echo "    mv draft.txt final.txt"
+echo "This renames the file from 'draft.txt' to 'final.txt'."
+echo ""
+
+echo "📁 Example (moving to another folder):"
+echo "    mv notes.txt documents/"
+echo "This moves the file 'notes.txt' into the 'documents' directory."
+echo ""
+
+echo "💡 Tips:"
+echo "• 'cp -r' lets you copy folders and their contents recursively."
+echo "• 'mv' can move multiple files at once into a folder:"
+echo "    mv *.txt archive/"
+echo ""
+
+read -p "👉 Try using 'cp' and 'mv' in a second shell, then press Enter to continue..." _
+
+echo ""
+echo "🎉🎉🎉 Congratulations! You finished the tuxtorial part 'Navigating the file system'!"
 }
 
 # --- Part 3: Placeholder ---
 part3() {
     echo ""
-    echo "🧩 Part 3: Coming soon!"
-    echo "We’ll learn how to view file contents with 'cat', 'less', and more."
+    echo "========================================="
+	echo "🧩 Part 3: Text data and scripts"
+	echo "========================================="
+	echo ""
+	echo ""
+	echo "huhu 🎉👉 🔁 🔑 🤔 📁 ⚠️"
+    # Content:
+	# process text data 
+	# less, cat, zcat
+	# wc -l) 
+	# start bash scripts
 }
 
 # --- Run all parts in order ---
 run_all_parts() {
     echo "🚀 Starting full tuxtorial..."
     part1
+	read -p "👉 Press Enter to continue with the next part!..." _
     part2
-    part3
+    read -p "👉 Press Enter to continue with the next part!..." _
+	part3
     echo ""
-    echo "🎓 All done! Great work!"
+    echo "🎓 You have finished the complete tuxtorial! Great work!"
 }
 
 # --- Main logic ---
