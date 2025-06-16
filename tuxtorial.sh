@@ -43,11 +43,11 @@ print_commands(){
 	echo "                                 Example: rm -r old_folder"
 
 	
-	echo "Modifying the file system"
-	echo "  less          - View the contents of a file page by page"
-    echo "  cat           - Print the contents of a file to the terminal"
-    echo "  zcat          - Print the contents of a compressed (.gz) file"
-    echo "  wc -l         - Count the number of lines in a file"
+	echo "Reading text files"
+	echo "  less          				  - View the contents of a file page by page"
+    echo "  cat                           - Print the contents of a file to the terminal"
+    echo "  zcat                          - Print the contents of a compressed (.gz) file"
+    echo "  wc -l                         - Count the number of lines in a file"
     echo ""
     echo "Run ./tuxtorial.sh to continue the interactive tutorial."
     exit 0
@@ -358,7 +358,6 @@ while true; do
     else
         echo "❌ Hmm... '$itemname' doesn't seem to be in '$foldername'."
         echo "Try running: ls $foldername and check again."
-		echo "(Or press Ctrl+C to quit tuxtorial)"
     fi
 done
 
@@ -456,22 +455,193 @@ read -p "👉 Press Enter to go to the next exercise..." _
 
 run_cd_exercise "$SCRIPT_DIR/sombrero" \
  "$SCRIPT_DIR/some_data/more_data/data_analysis" \
-  "cd ../sombrero/some_data/more_data/data_analysis" \
-  "cd ../sombrero/some_data/more_data/data_analysis/"
+  "cd ../some_data/more_data/data_analysis" \
+  "cd ../some_data/more_data/data_analysis/"
 
 echo "🎉🎉🎉 Congratulations! You finished the tuxtorial part 'Navigating the file system'!"
 }
 
-# --- Part 2: Placeholder ---
+
+
 part2() {
 echo ""
 echo "========================================="
-echo "🧩 Part 2: Modifying the file system"
+echo "🧩 Part 2: Text data and scripts"
+echo "========================================="
+echo ""
+echo "In Linux, almost everything is a file:"
+echo "  • A text document is a file ✅"
+echo "  • A folder is a special kind of file ✅"
+echo "  • A script is a file ✅"
+echo "  • Even commands like 'ls' are actually files stored somewhere on the system! ✅"
+echo ""
+echo "🔍 You can view and inspect many of these files using simple tools."
+echo ""
+
+echo "📘 less — View a file one page at a time"
+echo "Use ↑ ↓ PageUp PageDown to navigate, and press 'q' to quit."
+echo "'less' can read both plain text and compressed files"
+echo ""
+echo "Example:"
+echo "🐧@🎓~$ less $SCRIPT_DIR/some_data/less_data/example.fastq"
+echo "🐧@🎓~$ less $SCRIPT_DIR/some_data/less_data/example.fastq.gz"
+echo ""
+echo "Tip: you can also use relative paths! navigate with 'cd'"
+read -p "👉 Try it now in another terminal, then press Enter to continue..." _
+
+echo ""
+echo "📘 cat — Print the whole file to the terminal"
+echo ""
+echo "Useful for small files — it just prints everything right away. Less practical for big files."
+echo ""
+echo "Example:"
+echo "🐧@🎓~$ cat $SCRIPT_DIR/some_data/less_data/example.fastq"
+echo ""
+echo "Tip: you can also use relative paths! navigate with 'cd'"
+read -p "👉 Try it now in another terminal, then press Enter to continue..." _
+echo ""
+
+echo "📘️ zcat — Print the contents of a compressed .gz file:"
+echo ""
+echo "Great for viewing large compressed files without unzipping them first."
+echo ""
+echo "Example:"
+echo "🐧@🎓~$ zcat $SCRIPT_DIR/some_data/less_data/example.fastq.gz"
+
+echo ""
+echo "Tip: you can also use relative paths! navigate with 'cd'"
+read -p "👉 Try it now in another terminal, then press Enter to continue..." _
+
+echo ""
+echo "wc -l — Count the number of lines in a file:"
+echo "This tells you how many lines are in the file. Useful for checking file size."
+echo ""
+echo "Example:"
+echo "🐧@🎓~$ wc -l $SCRIPT_DIR/some_data/less_data/example.fastq"
+echo ""
+echo "Tip: you can also use relative paths! navigate with 'cd'"
+read -p "👉 Try it now in another terminal, then press Enter to continue..." _
+
+numlines=""
+while true; do
+	read -p "🧠 Enter number of lines in $SCRIPT_DIR/some_data/less_data/example.fastq: " numlines
+
+	if [[ "$numlines" == "1000" ]]; then
+		echo "✅ This is correct!"
+		break
+	else
+		echo "❌ Wrong! Try again."	
+	fi
+done
+read -p "👉 Press Enter to continue..." _
+
+echo "Example 2:"
+echo "🐧@🎓~$ cd $SCRIPT_DIR/some_data/more_data/raw_data"
+echo "🐧@🎓~$ wc -l reference.fasta"
+echo ""
+
+numlines=""
+while true; do
+	read -p "🧠 Enter number of lines in $SCRIPT_DIR/some_data/more_data/raw_data/reference.fasta: " numlines
+
+	if [[ "$numlines" == "20" ]]; then
+		echo "✅ This is correct!"
+		break
+	else
+		echo "❌ Wrong! Try again."	
+	fi
+done
+echo ""
+echo "If you are here, raise your hand and say magic word 'Data formats' to your tutor. We will speak about it together!"
+read -p "👉 Press Enter to continue..." _
+
+
+# start bash scripts
+echo ""
+echo "📘 Running Programs from the Command Line"
+echo ""
+echo "In Linux, many programs can be started just by typing their name:"
+echo "  • Examples: firefox, python3, nano, grep, ls"
+echo ""
+echo "These programs live in system folders like /usr/bin — you don’t need to go there!"
+echo ""
+echo "Most programs accept arguments (options and inputs):"
+echo "  • For example: ls -l /home"
+echo ""
+echo "Many also support --help or -h to show usage info:"
+echo "  • Try: ls --help"
+echo ""
+
+echo "Now let’s try a simple example — a simple program (Bash script) with arguments!"
+echo ""
+read -p "👉 Press Enter to continue..." _
+echo ""
+echo "The script is located at:"
+echo "$SCRIPT_DIR/some_data/more_data/data_analysis/mini_fun.sh"
+echo ""
+echo "How to run it?"
+echo ""
+echo "🔹 ABSOLUTE PATH:"
+echo "You can run the script from anywhere using the full path:"
+echo "  $SCRIPT_DIR/some_data/more_data/data_analysis/mini_fun.sh -word Tux"
+echo ""
+
+echo "🔹 RELATIVE PATH:"
+echo "If you are in: $SCRIPT_DIR/some_data/more_data"
+echo "You can run it with:"
+echo "  ./data_analysis/mini_fun.sh -number 8"
+echo ""
+
+echo "If you are in: $SCRIPT_DIR (the root of your project)"
+echo "You can run it with:"
+echo "  ./some_data/more_data/data_analysis/mini_fun.sh -word Penguin"
+echo ""
+
+echo "🔹 Error: Permission denied"
+echo "If the script is not executable, make it so with:"
+echo "  chmod +x some_data/more_data/data_analysis/mini_fun.sh"
+echo ""
+
+
+in_user=""
+while true; do
+	read -p "🧠 Enter the output of the mini_fun.sh if you input a number 1000: " in_user
+
+	if [[ "$in_user" == "250.00" ]]; then
+		echo "✅ This is correct!"
+		break
+	else
+		echo "❌ Wrong! Try again. Maybe float numbers?"	
+	fi
+done
+read -p "👉 Press Enter to continue..." _
+echo ""
+
+in_user=""
+while true; do
+	read -p "🧠 Enter the output of the mini_fun.sh if you input a -word bash: " in_user
+
+	if [[ "$in_user" == "I love you, bash!" ]]; then
+		echo "✅ This is correct!"
+		break
+	else
+		echo "❌ Wrong! Try again. Maybe float numbers?"	
+	fi
+done
+echo ""
+echo "🎉🎉🎉 Congratulations! You finished the tuxtorial part 'Text data and scripts'!"
+
+
+}
+
+part3() {
+echo ""
+echo "========================================="
+echo "🧩 Part 3: Modifying the file system"
 echo "========================================="
 echo ""
 
 # 1. mkdir with rules what not to do and how not to name
-echo ""
 echo "📘 Our next command: mkdir — Make a New Directory"
 echo ""
 echo "The command 'mkdir' stands for 'make directory'."
@@ -485,16 +655,17 @@ echo ""
 
 echo "Example:"
 echo ""
-echo "In your second shell run the following:"
+echo "In your second terminal run the following:"
+echo "🐧@🎓~$ cd $SCRIPT_DIR"
 echo "🐧@🎓~$ mkdir projects"
 echo "🐧@🎓~$ cd projects"
 echo "🐧@🎓~$ mkdir demo"
 echo "Now you've created a folder 'projects', entered it, and created another folder inside called 'demo'."
-read -p "👉 Try it now in another shell, then press Enter to continue..." _
+read -p "👉 Try it now in another terminal, then press Enter to continue..." _
 
 echo ""
 echo "Naming Rules for Directories:"
-echo "✅ You *can* use:"
+echo "✅ You can use:"
 echo "   - Letters (A–Z, a–z)"
 echo "   - Numbers (0–9)"
 echo "   - Underscores (_) and hyphens (-)"
@@ -529,7 +700,7 @@ echo ""
 echo "Then run: ls"
 echo "You'll see your new folders listed."
 echo ""
-read -p "👉 Try it now in the second shell, then press Enter to continue..." _
+read -p "👉 Try it now in the second terminal, then press Enter to continue..." _
 
 echo ""
 echo "Create nested folders in one command using -p:"
@@ -550,7 +721,7 @@ echo "    - It creates parent folders as needed."
 echo "    - It won’t complain if parts of the path already exist."
 echo ""
 
-read -p "👉 Try it in a second shell, then press Enter to continue..." _
+read -p "👉 Try it in a second terminal, then press Enter to continue..." _
 
 # mkdir exercise
 echo ""
@@ -608,7 +779,7 @@ echo "   (This can delete EVERYTHING in your current folder!)"
 echo ""
 
 echo "Example:"
-echo ""
+echo "🐧@🎓~$ cd $SCRIPT_DIR"
 echo "🐧@🎓~$ mkdir temp_folder"
 echo "🐧@🎓~$ ls temp_folder"
 echo "🐧@🎓~$ mkdir temp_folder/bla temp_folder/blu"
@@ -617,80 +788,73 @@ echo "🐧@🎓~$ rm -r temp_folder"
 echo ""
 echo "This will first create and then delete the entire 'temp_folder' and both subfolders inside it."
 echo ""
-read -p "👉 Try creating a folder in a second shell, then press Enter to continue..." _
+read -p "👉 Try it in a second terminal, then press Enter to continue..." _
 
 echo ""
 echo "💡 Exercise:"
 echo ""
-echo "Now clean up your mess. So far you created folders:"
-echo "   apples bananas oranges"
-echo "   projects/2025/June/code"
-echo "   $SCRIPT_DIR/sombrero/small"
-echo ""
-echo "Find the folders and delete them!"
+echo "Now clean up your mess!"
+echo "Find the folders you created before and delete them!"
 echo ""
 read -p "👉 Press Enter to continue..." _
 
-# cp and mv (also rename)
+# cp 
 echo ""
-echo "📘 Copying and Moving Files: cp and mv"
+echo "📘 Copying files: cp"
 echo ""
 
-echo "cp — Copy Files or Folders"
 echo "The 'cp' command is used to copy files or folders from one place to another."
 echo ""
 
-echo "✅ Example:"
-echo "    cp report.txt backup_report.txt"
-echo "This creates a new file 'backup_report.txt' that is a copy of 'report.txt'."
+echo "Example:"
+echo "Lets copy the reference.fasta:"
+echo "🐧@🎓~$ cd $SCRIPT_DIR/some_data/more_data/raw_data"
+echo "🐧@🎓~$ cp reference.fasta reference_copy.fasta"
 echo ""
-
-echo "📁 Copying into a folder:"
-echo "    cp photo.jpg pictures/"
-echo "This copies 'photo.jpg' into the 'pictures' directory."
-echo ""
-
-echo "🔸 2. mv — Move or Rename Files"
-echo "The 'mv' command is used to *move* or *rename* files and folders."
-echo ""
-
-echo "✅ Example (renaming):"
-echo "    mv draft.txt final.txt"
-echo "This renames the file from 'draft.txt' to 'final.txt'."
-echo ""
-
-echo "📁 Example (moving to another folder):"
-echo "    mv notes.txt documents/"
-echo "This moves the file 'notes.txt' into the 'documents' directory."
-echo ""
-
-echo "💡 Tips:"
-echo "• 'cp -r' lets you copy folders and their contents recursively."
-echo "• 'mv' can move multiple files at once into a folder:"
-echo "    mv *.txt archive/"
-echo ""
-
-read -p "👉 Try using 'cp' and 'mv' in a second shell, then press Enter to continue..." _
+read -p "👉 Try it in a second terminal, then press Enter to continue..." _
 
 echo ""
-echo "🎉🎉🎉 Congratulations! You finished the tuxtorial part 'Navigating the file system'!"
+echo "Lets backup a very important report by putting its copy from folder 'reports' into a folder 'backups'"
+echo "🐧@🎓~$ cd $SCRIPT_DIR/some_data/more_data/reports"
+echo "🐧@🎓~$ cp report_very_important.txt ../backups/report_very_important_backup.txt"
+echo ""
+read -p "👉 Try it in a second terminal, then press Enter to continue..." _
+
+echo ""
+echo "'cp -r' lets you copy folders and their contents recursively."
+echo ""
+echo "Example:"
+echo "Lets backup the whole reports folder (we will copy the whole folder to 'backups')"
+echo "🐧@🎓~$ cd $SCRIPT_DIR/some_data/more_data"
+echo "🐧@🎓~$ cp -r reports/ backups/"
+echo ""
+read -p "👉 Try it in a second terminal, then press Enter to continue..." _
+
+
+# mv (also rename)
+echo ""
+echo "📘 Moving (or renaming) files: mv"
+echo "The 'mv' command is used to move or rename files and folders."
+echo ""
+
+echo "Example renaming:"
+echo "That report was not so important after all..."
+echo "🐧@🎓~$ cd $SCRIPT_DIR/some_data/more_data/reports"
+echo "🐧@🎓~$ mv report_very_important.txt report_unimportant.txt"
+echo ""
+read -p "👉 Try it in a second terminal, then press Enter to continue..." _
+echo ""
+
+echo "'mv' can move multiple files at once into a folder:"
+echo "Lets move all our reports into the 'archive':"
+echo "🐧@🎓~$ cd $SCRIPT_DIR/some_data/more_data/reports"
+echo "mv *.txt ../archives"
+echo ""
+read -p "👉 Try it in a second terminal, then press Enter to continue..." _
+echo ""
+echo "🎉🎉🎉 Congratulations! You finished the tuxtorial part 'Modifying the file system'!"
 }
 
-# --- Part 3: Placeholder ---
-part3() {
-    echo ""
-    echo "========================================="
-	echo "🧩 Part 3: Text data and scripts"
-	echo "========================================="
-	echo ""
-	echo ""
-	echo "huhu 🎉👉 🔁 🔑 🤔 📁 ⚠️"
-    # Content:
-	# process text data 
-	# less, cat, zcat
-	# wc -l) 
-	# start bash scripts
-}
 
 # --- Run all parts in order ---
 run_all_parts() {
@@ -702,6 +866,8 @@ run_all_parts() {
 	part3
     echo ""
     echo "🎓 You have finished the complete tuxtorial! Great work!"
+	# echo "huhu 🎉👉 🔁 🔑 🤔 📁 ⚠️ 🛠"
+
 }
 
 # --- Main logic ---
@@ -712,5 +878,5 @@ case "$1" in
     --help|-h) print_help ;;
     --commands|--ref) print_commands ;;
     "") run_all_parts ;;
-    *) echo "❓ Unknown option: $1"; print_help ;;
+    *) echo "Unknown option: $1"; print_help ;;
 esac
