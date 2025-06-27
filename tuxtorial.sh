@@ -324,7 +324,7 @@ foldername=""
 while true; do
     read -p "🧠 Enter the name of one folder here: " foldername
 
-    if [[ -d "$SCRIPT_DIR/$foldername" ]]; then
+    if [[ -n "$foldername" && -d "$SCRIPT_DIR/$foldername" ]]; then
         echo "✅ Correct! '$foldername' is a folder in this directory."
         break
     else
@@ -437,7 +437,7 @@ echo "Press TAB as long as your path gets longer"
 while true; do
 	read -p "🧠 Copy and paste here the longest absolute path you could autocomplete from $SCRIPT_DIR/sombrero:" folderpath
 
-	if [[ -d "$folderpath" && "$folderpath" == "$SCRIPT_DIR/sombrero/just/a/very/long/path/of/subfolders" ]]; then
+	if [[ -d "$folderpath" && "${folderpath%/}" == "$SCRIPT_DIR/sombrero/just/a/very/long/path/of/subfolders" ]]; then
 		echo "✅ Great! You dig atocompletion!"
 		break
 	else
@@ -870,10 +870,21 @@ run_all_parts() {
 
 }
 
+from_part2() {
+    part2
+    read -p "👉 Press Enter to continue with the next part!..." _
+	part3
+    echo ""
+    echo "🎓 You have finished the complete tuxtorial! Great work!"
+	# echo "huhu 🎉👉 🔁 🔑 🤔 📁 ⚠️ 🛠"
+
+}
+
+
 # --- Main logic ---
 case "$1" in
-    part1) part1 ;;
-    part2) part2 ;;
+    part1) run_all_parts ;;
+    part2) from_part2 ;;
     part3) part3 ;;
     --help|-h) print_help ;;
     --commands|--ref) print_commands ;;
